@@ -2,34 +2,58 @@ class ProductManager {
     static id = 0;
     Nombre;
     products;
-    constructor(Nombre){
-        this.Nombre;
-        this.products = [];   
+
+    constructor(Nombre) {
+        this.Nombre = Nombre;
+        this.products = [];
     }
-    productsConstructor(title, description, price, thumbnail,stock){
-        const NuevoProducts = {
-            id: ProductManager.id,
-            title, 
-            description, 
-            price, 
+
+    productsConstructor(title, description, price, thumbnail, code, stock, id) {
+        // Verificar si ya existe un producto con el mismo código
+        const codeAsInt = parseInt(code);
+        if (isNaN(codeAsInt)) {
+            console.log("El código debe ser un entero.");
+            return;
+        }
+
+        const existingProduct = this.products.find((prod) => prod.code === codeAsInt);
+        if (existingProduct) {
+            console.log("El producto ya existe.");
+            return existingProduct;
+        }
+
+        const NuevoProduct = {
+            id: id !== undefined ? id : ProductManager.id,
+            title,
+            description,
+            price,
             thumbnail,
-            stock
+            stock,
+            code: codeAsInt,
         };
 
-        this.products.push(NuevoProducts)
-        ProductManager.id++;
-        return NuevoProducts;
-    };
-    getProducts(){
-        return this.products
-    };
-    getById(id){
-        return this.products.find((prod)=> prod.id === id)||"Product Not found"
+        this.products.push(NuevoProduct);
+        if (id === undefined) {
+            ProductManager.id++;
+        } else {
+            console.log("Producto actualizado correctamente.");
+        }
+
+        console.log("Producto agregado correctamente.");
+        return NuevoProduct;
     }
 
-}
-const Producto = new ProductManager("Tienda chino")
-const nuevoProducto = Producto.productsConstructor( "Crema Corporal", "jashdanlwedihqliwhjdnñqkwhjdiqhwiopdh", 2500, "linkDeLaImagen", "12345a", 25 ) 
-const nuevoProducto2 = Producto.productsConstructor( "Crema Corporal2", "jashdanlwedihqliwhjdnñqkwhjdiqhwiopdh", 2500, "linkDeLaImagen", "12345a", 25 ) 
-console.log(Producto.getById(5))
+    getProducts() {
+        return this.products;
+    }
 
+    getById(id) {
+        return this.products.find((prod) => prod.id === id) || "Producto no encontrado.";
+    }
+}
+
+const Producto = new ProductManager("Tienda chino");
+const nuevoProducto = Producto.productsConstructor("Crema Corporal", "Descripción", 250, "linkDeLaImagen", 12345, 22, 3);
+const nuevoProducto2 = Producto.productsConstructor("Crema Corporal2", "Descripción2", 2500, "linkDeLaImagen2", 12346, 22, 4);
+const nuevoProducto3 = Producto.productsConstructor("Crema Corporal3", "Descripción3", 300, "linkDeLaImagen3", 12345, 10, 3); // Esto mostrará el mensaje de producto existente
+console.log(Producto.getProducts(5));
